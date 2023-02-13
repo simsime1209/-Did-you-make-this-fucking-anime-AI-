@@ -1,0 +1,37 @@
+#@title ### 0. GPU 작동 상태 확인
+
+!nvidia-smi
+     
+
+#@title ### 1. Novel AI API 백엔드 및 모델 다운로드
+#@markdown 다운로드 속도가 너무 느리다면 다시 시작해 보새요!
+
+%cd /content/
+!apt install -y -qq aria2
+!aria2c --summary-interval=5 -x 3 --allow-overwrite=true -Z \
+  https://pub-2fdef7a2969f43289c42ac5ae3412fd4.r2.dev/naifu.tar \
+  https://pub-2fdef7a2969f43289c42ac5ae3412fd4.r2.dev/animefull-latest.tar 
+  
+!echo "Decompressing..."
+!tar xf naifu.tar && rm naifu.tar
+!echo "Done."
+     
+
+#@title ### 2. 종속성 설치
+#@markdown 설치가 완료될 때까지 기다리세요. 몇 분정도 소요됩니다!
+
+%cd /content/naifu
+!pip install virtualenv && bash ./setup.sh
+!curl -Ls https://github.com/ekzhang/bore/releases/download/v0.4.0/bore-v0.4.0-x86_64-unknown-linux-musl.tar.gz | tar zx -C /usr/bin
+!curl -Lo /usr/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x /usr/bin/cloudflared
+!/content/naifu/venv/bin/python -m pip install -qq pytorch_lightning==1.7.7
+     
+
+#@title ### 3. 모델 시작
+#@markdown 출력에 매핑된 주소로 새 창을 여세요. ('trycloudflare.com' / 'bore.pub'로 끝납니다 ;)  <- 서버가 열리면 접속할 주소
+#@markdown - 모델 로딩이 완료될 때까지 기다린 후（`Application startup complete'가 나타나면 새로 열었던 창을 새로고침하세요! 서버가 활성화 된 거랍니다!
+#@markdown - 'Cloudflare'에서 제공하는 서비스는 때때로 지연이 있을 수 있어서, 'bore' 터널을 대신 ​​사용할 수도 있어요.
+
+%cd /content/naifu
+!sed -i 's/# export 8⁹="1"/export SAVE_FILES="1"/g' run.sh
+!bash run.sh & cloudflared tunnel --url localhost:6969
