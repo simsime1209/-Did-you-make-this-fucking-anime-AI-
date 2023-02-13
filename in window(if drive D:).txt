@@ -1,0 +1,3 @@
+//prepare D:content forder, and two .tar file
+
+tar -zxvf
