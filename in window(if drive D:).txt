@@ -1,3 +1,16 @@
 //prepare D:content forder, and two .tar file
+cd /content/
 
-tar -zxvf
+tar -xvf animefull-latest.tar
+tar -xvf naifu.tar
+
+del "animefull-latest.tar"
+del "naifu.tar"
+
+// 까지-----처음 세팅 + 따로 window용 pip, curl 설치 필요
+
+cd /content/naifu
+
+python -m pip install virtualenv && bash ./setup.sh
+
+curl -Ls https://github.com/ekzhang/bore/releases/download/v0.4.0/bore-v0.4.0-x86_64-
