@@ -30,3 +30,4 @@ del run.sh
 ren run_new.sh run.sh'
 
 몰라신발
+응 안되 그냥 리눅스 쓰셈 
